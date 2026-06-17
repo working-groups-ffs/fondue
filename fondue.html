@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
 <head>
-  <base target="_top">
+  <meta charset="UTF-8">
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
@@ -53,7 +53,7 @@
       <label>ฟอร์มที่พบปัญหา <span class="req">*</span></label>
       <select id="formType" required>
         <option value="">-- เลือกฟอร์ม --</option>
-        <option value="แบบฟอร์มสมัครสมาชิก">แบบฟอร์มสมัครสมาชิก (หลัก)</option>
+        <option value="แบบฟอร์มสมัครสมาชิก">แบบฟอร์มสมัครสมาชิก</option>
         <option value="แบบฟอร์มสมัครคณะทำงาน">แบบฟอร์มสมัครคณะทำงาน</option>
       </select>
     </div>
@@ -174,7 +174,7 @@
     return (val === 'อื่น ๆ' || val === 'อื่นๆ') ? document.getElementById(inputId).value : val;
   }
 
-  // ด่านตรวจจับขนาดไฟล์เกิน 10MB
+  // 🛡️ ดักจับและควบคุมขนาดอัปโหลดไฟล์ (ป้องกันอาการค้าง)
   document.getElementById('evidenceFile').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {
@@ -223,31 +223,39 @@
       didOpen: () => { Swal.showLoading(); }
     });
 
-    google.script.run
-      .withSuccessHandler(function(res) {
-        if(res.status === 'success') {
-          Swal.fire({
-            icon: 'success',
-            title: '<strong>ส่งข้อมูลสำเร็จ</strong>', 
-            html: 'เจ้าหน้าที่จะติดต่อกลับภายใน 1–2 วันทำการ', 
-            confirmButtonText: 'ตกลง',
-            confirmButtonColor: '#0056b3'
-          }).then(() => {
-            document.getElementById('complaintForm').reset();
-            document.getElementById('file-name').innerText = '';
-            document.getElementById('probTypeOther').style.display = 'none';
-            document.getElementById('osOther').style.display = 'none';
-            document.getElementById('browserOther').style.display = 'none';
-            fileData = { base64: null, mime: null, name: null };
-          });
-        } else {
-          Swal.fire('เกิดข้อผิดพลาด', res.message, 'error');
-        }
-      })
-      .withFailureHandler(function(err) {
-        Swal.fire('ข้อผิดพลาดเครือข่าย', err.message, 'error');
-      })
-      .submitTicket(payload);
+    // 🎯 เติมลิงก์ Web App URL (ลงท้ายด้วย /exec) ที่ได้จาก Google Apps Script ตรงนี้ครับ
+    const APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwT910uisyZ8qS1birybturv4LK3QTrmenSy1lam_4UFwMZykXbzV8S8-N7d7FFkzkDTw/exec";
+
+    // ยิงข้อมูลข้ามโดเมนจาก GitHub ไปหา Google
+    fetch(APP_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+      body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(res => {
+      if(res.status === 'success') {
+        Swal.fire({
+          icon: 'success',
+          title: '<strong>ส่งข้อมูลสำเร็จ</strong>', 
+          html: 'เจ้าหน้าที่จะติดต่อกลับภายใน 1–2 วันทำการ', 
+          confirmButtonText: 'ตกลง',
+          confirmButtonColor: '#0056b3'
+        }).then(() => {
+          document.getElementById('complaintForm').reset();
+          document.getElementById('file-name').innerText = '';
+          document.getElementById('probTypeOther').style.display = 'none';
+          document.getElementById('osOther').style.display = 'none';
+          document.getElementById('browserOther').style.display = 'none';
+          fileData = { base64: null, mime: null, name: null };
+        });
+      } else {
+        Swal.fire('เกิดข้อผิดพลาด', res.message, 'error');
+      }
+    })
+    .catch(err => {
+      Swal.fire('ข้อผิดพลาดเครือข่าย', 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้ โปรดลองอีกครั้ง', 'error');
+    });
   });
 </script>
 
