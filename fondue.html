@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    :root { --primary: #0056b3; --bg: #f4f7f6; --text: #333; }
+    body { font-family: 'Sarabun', sans-serif; background-color: var(--bg); color: var(--text); padding: 20px 15px; margin: 0; }
+    .container { max-width: 650px; margin: 0 auto; background: #fff; padding: 30px 25px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+    .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #eee; padding-bottom: 20px; }
+    .header h2 { color: var(--primary); margin: 0 0 10px 0; font-size: 24px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .header p { color: #666; margin: 0; font-size: 15px; }
+    
+    .section-title { font-size: 17px; font-weight: bold; color: var(--primary); margin: 25px 0 15px 0; padding-left: 10px; border-left: 4px solid var(--primary); }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 14.5px; }
+    .req { color: #dc3545; }
+    
+    input[type="text"], input[type="email"], select, textarea {
+      width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; font-size: 15px; box-sizing: border-box; transition: 0.3s;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 5px rgba(0,86,179,0.2); }
+    
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    @media(max-width: 500px) { .grid-2 { grid-template-columns: 1fr; } }
+    
+    .file-upload-box { border: 2px dashed #ccc; padding: 20px; text-align: center; border-radius: 8px; cursor: pointer; background: #fafafa; transition: 0.3s; }
+    .file-upload-box:hover { border-color: var(--primary); background: #f0f4f8; }
+    .file-upload-box input { display: none; }
+    #file-name { margin-top: 10px; font-size: 14px; color: #28a745; font-weight: bold; }
+
+    .btn-submit { width: 100%; background: var(--primary); color: #fff; border: none; padding: 14px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 30px; transition: 0.3s; font-family: inherit;}
+    .btn-submit:hover { background: #004494; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,86,179,0.3); }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h2>🛠️ ระบบแจ้งความท้าทายการสมัคร</h2>
+    <p>พบปัญหาในการใช้งานหรือการสมัคร แจ้งทีมงานได้ที่นี่</p>
+  </div>
+
+  <form id="complaintForm">
+    
+    <div class="section-title">ข้อมูลทั่วไป</div>
+    <div class="form-group">
+      <label>ท่านพบแบบฟอร์มสมัครจากช่องทางใด <span class="req">*</span></label>
+      <input type="text" id="source" placeholder="เช่น Facebook, เพื่อนแนะนำ, เว็บไซต์" required>
+    </div>
+    <div class="form-group">
+      <label>ฟอร์มที่พบปัญหา <span class="req">*</span></label>
+      <select id="formType" required>
+        <option value="">-- เลือกฟอร์ม --</option>
+        <option value="แบบฟอร์มสมัครสมาชิก">แบบฟอร์มสมัครสมาชิก (หลัก)</option>
+        <option value="แบบฟอร์มสมัครคณะทำงาน">แบบฟอร์มสมัครคณะทำงาน</option>
+      </select>
+    </div>
+    
+    <div class="grid-2">
+      <div class="form-group"><label>ชื่อ-นามสกุล <span class="req">*</span></label><input type="text" id="name" placeholder="ชื่อจริง-นามสกุล" required></div>
+      <div class="form-group"><label>อีเมลที่ใช้สมัคร <span class="req">*</span></label><input type="email" id="email" placeholder="example@email.com" required></div>
+      <div class="form-group"><label>เบอร์โทรศัพท์ <span class="req">*</span></label><input type="text" id="phone" placeholder="08xxxxxxxx" maxlength="10" required></div>
+      <div class="form-group"><label>Line ID <span style="color:#888; font-weight:normal;">(ไม่บังคับ)</span></label><input type="text" id="lineId" placeholder="ไอดีไลน์"></div>
+    </div>
+    <div class="form-group"><label>รหัสสมาชิก <span style="color:#888; font-weight:normal;">(หากมีแล้ว)</span></label><input type="text" id="memberId" placeholder="เช่น FFs260001"></div>
+
+    <div class="section-title">รายละเอียดปัญหา</div>
+    <div class="form-group">
+      <label>ประเภทปัญหาที่พบ <span class="req">*</span></label>
+      <select id="probType" required>
+        <option value="">-- เลือกปัญหา --</option>
+        <option value="สมัครสมาชิกไม่ได้">สมัครสมาชิกไม่ได้</option>
+        <option value="ไม่ได้รับอีเมลยืนยัน">ไม่ได้รับอีเมลยืนยัน</option>
+        <option value="เข้าสู่ระบบไม่ได้">เข้าสู่ระบบไม่ได้</option>
+        <option value="ลืมรหัสผ่าน">ลืมรหัสผ่าน</option>
+        <option value="ข้อมูลสมาชิกไม่ถูกต้อง">ข้อมูลสมาชิกไม่ถูกต้อง</option>
+        <option value="อัปโหลดเอกสารไม่ได้">อัปโหลดเอกสารไม่ได้</option>
+        <option value="อื่น ๆ">อื่น ๆ</option>
+      </select>
+      <input type="text" id="probTypeOther" style="display:none; margin-top:8px; border-color:var(--primary);" placeholder="โปรดระบุปัญหาที่พบ...">
+    </div>
+
+    <div class="section-title">ข้อมูลทางเทคนิค</div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>อุปกรณ์ที่ใช้ <span class="req">*</span></label>
+        <select id="device" required>
+          <option value="">- เลือก -</option>
+          <option value="โทรศัพท์มือถือ">โทรศัพท์มือถือ</option>
+          <option value="แท็บเล็ต">แท็บเล็ต</option>
+          <option value="คอมพิวเตอร์">คอมพิวเตอร์ / โน้ตบุ๊ก</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>ระบบปฏิบัติการ (OS) <span class="req">*</span></label>
+        <select id="os" required>
+          <option value="">- เลือก -</option>
+          <option value="iOS">iOS (iPhone/iPad)</option>
+          <option value="Android">Android</option>
+          <option value="Windows">Windows</option>
+          <option value="macOS">macOS</option>
+          <option value="อื่น ๆ">อื่น ๆ</option>
+        </select>
+        <input type="text" id="osOther" style="display:none; margin-top:8px; border-color:var(--primary);" placeholder="โปรดระบุระบบปฏิบัติการ...">
+      </div>
+      <div class="form-group" style="grid-column: span 2;">
+        <label>เบราว์เซอร์ที่ใช้ (Browser) <span class="req">*</span></label>
+        <select id="browser" required>
+          <option value="">- เลือก -</option>
+          <option value="Chrome">Google Chrome</option>
+          <option value="Safari">Safari</option>
+          <option value="Edge">Microsoft Edge</option>
+          <option value="Firefox">Firefox</option>
+          <option value="Line In-App">เข้าผ่านแอป Line</option>
+          <option value="อื่น ๆ">อื่น ๆ</option>
+        </select>
+        <input type="text" id="browserOther" style="display:none; margin-top:8px; border-color:var(--primary);" placeholder="โปรดระบุเบราว์เซอร์...">
+      </div>
+    </div>
+
+    <div class="section-title">หลักฐานประกอบ</div>
+    <div class="form-group">
+      <label>แนบภาพหน้าจอหรือคลิปวิดีโอ <span style="color:#888; font-weight:normal;">(ถ้ามี)</span></label>
+      <label class="file-upload-box" id="uploadBox">
+        <div style="font-size: 30px;">📸</div>
+        <div style="color: var(--primary); font-weight: bold; margin-top: 5px;">คลิกเพื่อแนบไฟล์หลักฐาน</div>
+        <div style="font-size: 12px; color: #888; margin-top: 5px;">รองรับรูปภาพหรือวิดีโอ (ขนาดไม่เกิน 10MB)</div>
+        <input type="file" id="evidenceFile" accept="image/*,video/*">
+        <div id="file-name"></div>
+      </label>
+    </div>
+
+    <div class="section-title">การติดตามผล</div>
+    <div class="form-group">
+      <label>ต้องการให้ทีมงานติดต่อกลับทางใด <span class="req">*</span></label>
+      <select id="contactVia" required>
+        <option value="">-- เลือกช่องทาง --</option>
+        <option value="อีเมล">อีเมล</option>
+        <option value="โทรศัพท์">โทรศัพท์</option>
+        <option value="LINE">LINE</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>ข้อเสนอแนะ / รายละเอียดเพิ่มเติม <span style="color:#888; font-weight:normal;">(ถ้ามี)</span></label>
+      <textarea id="suggestion" rows="3" placeholder="อธิบายปัญหาเพิ่มเติม หรือข้อเสนอแนะเพื่อให้เราปรับปรุง..."></textarea>
+    </div>
+
+    <button type="submit" class="btn-submit">ส่งข้อมูลแจ้งปัญหา</button>
+  </form>
+</div>
+
+<script>
+  let fileData = { base64: null, mime: null, name: null };
+
+  function setupOtherToggle(selectId, inputId) {
+    document.getElementById(selectId).addEventListener('change', function() {
+      const otherInput = document.getElementById(inputId);
+      if(this.value === 'อื่น ๆ' || this.value === 'อื่นๆ') {
+        otherInput.style.display = 'block'; otherInput.required = true;
+      } else {
+        otherInput.style.display = 'none'; otherInput.required = false; otherInput.value = '';
+      }
+    });
+  }
+
+  setupOtherToggle('probType', 'probTypeOther');
+  setupOtherToggle('os', 'osOther');
+  setupOtherToggle('browser', 'browserOther');
+
+  function getFinalValue(selectId, inputId) {
+    const val = document.getElementById(selectId).value;
+    return (val === 'อื่น ๆ' || val === 'อื่นๆ') ? document.getElementById(inputId).value : val;
+  }
+
+  // ด่านตรวจจับขนาดไฟล์เกิน 10MB
+  document.getElementById('evidenceFile').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      if(file.size > 10 * 1024 * 1024) { 
+         Swal.fire('ขนาดไฟล์ใหญ่เกินไป', 'โปรดแนบไฟล์ขนาดไม่เกิน 10MB', 'warning');
+         this.value = ''; document.getElementById('file-name').innerText = '';
+         return;
+      }
+      document.getElementById('file-name').innerText = "✅ เลือกไฟล์แล้ว: " + file.name;
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        fileData.base64 = event.target.result;
+        fileData.mime = file.type;
+        fileData.name = file.name;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  document.getElementById('complaintForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const payload = {
+      source: document.getElementById('source').value,
+      formType: document.getElementById('formType').value,
+      name: document.getElementById('name').value,
+      email: document.getElementById('email').value,
+      phone: document.getElementById('phone').value,
+      lineId: document.getElementById('lineId').value,
+      memberId: document.getElementById('memberId').value,
+      probType: getFinalValue('probType', 'probTypeOther'),
+      device: document.getElementById('device').value,
+      os: getFinalValue('os', 'osOther'),
+      browser: getFinalValue('browser', 'browserOther'),
+      contactVia: document.getElementById('contactVia').value,
+      suggestion: document.getElementById('suggestion').value,
+      fileBase64: fileData.base64,
+      fileMime: fileData.mime,
+      fileName: fileData.name 
+    };
+
+    Swal.fire({
+      title: 'กำลังส่งข้อมูล...',
+      text: 'โปรดรอสักครู่ ระบบกำลังอัปโหลดหลักฐานและส่งเรื่องให้ทีมงาน',
+      allowOutsideClick: false,
+      didOpen: () => { Swal.showLoading(); }
+    });
+
+    google.script.run
+      .withSuccessHandler(function(res) {
+        if(res.status === 'success') {
+          Swal.fire({
+            icon: 'success',
+            title: '<strong>ส่งข้อมูลสำเร็จ</strong>', 
+            html: 'เจ้าหน้าที่จะติดต่อกลับภายใน 1–2 วันทำการ', 
+            confirmButtonText: 'ตกลง',
+            confirmButtonColor: '#0056b3'
+          }).then(() => {
+            document.getElementById('complaintForm').reset();
+            document.getElementById('file-name').innerText = '';
+            document.getElementById('probTypeOther').style.display = 'none';
+            document.getElementById('osOther').style.display = 'none';
+            document.getElementById('browserOther').style.display = 'none';
+            fileData = { base64: null, mime: null, name: null };
+          });
+        } else {
+          Swal.fire('เกิดข้อผิดพลาด', res.message, 'error');
+        }
+      })
+      .withFailureHandler(function(err) {
+        Swal.fire('ข้อผิดพลาดเครือข่าย', err.message, 'error');
+      })
+      .submitTicket(payload);
+  });
+</script>
+
+</body>
+</html>
