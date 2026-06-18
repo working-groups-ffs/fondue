@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>ระบบแจ้งความท้าทายการสมัคร</title>
+  <title>ระบบแจ้งความท้าทายการสมัครคณะทำงาน</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛠️</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -27,10 +27,10 @@
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
     @media(max-width: 500px) { .grid-2 { grid-template-columns: 1fr; } }
     
-    .file-upload-box { border: 2px dashed #ccc; padding: 20px; text-align: center; border-radius: 8px; cursor: pointer; background: #fafafa; transition: 0.3s; }
+    .file-upload-box { border: 2px dashed #ccc; padding: 20px; text-align: center; border-radius: 8px; cursor: pointer; background: #fafafa; transition: 0.3s; height: 100%; display: flex; flex-direction: column; justify-content: center; box-sizing: border-box;}
     .file-upload-box:hover { border-color: var(--primary); background: #f0f4f8; }
     .file-upload-box input { display: none; }
-    #file-name { margin-top: 10px; font-size: 14px; color: #28a745; font-weight: bold; }
+    .file-name { margin-top: 10px; font-size: 13px; color: #28a745; font-weight: bold; word-break: break-all; }
 
     .btn-submit { width: 100%; background: var(--primary); color: #fff; border: none; padding: 14px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 30px; transition: 0.3s; font-family: inherit;}
     .btn-submit:hover { background: #004494; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,86,179,0.3); }
@@ -40,24 +40,16 @@
 
 <div class="container">
   <div class="header">
-    <h2>🛠️ ระบบแจ้งความท้าทายการสมัคร</h2>
-    <p>พบปัญหาในการใช้งานหรือการสมัคร แจ้งทีมงานได้ที่นี่</p>
+    <h2>🛠️ ระบบแจ้งความท้าทายการสมัครคณะทำงาน</h2>
+    <p>พบปัญหาในการใช้งานหรือต้องการอัปเดตเอกสาร สามารถแจ้งได้ที่นี่</p>
   </div>
 
   <form id="complaintForm">
     
     <div class="section-title">ข้อมูลทั่วไป</div>
     <div class="form-group">
-      <label>ท่านพบแบบฟอร์มสมัครจากช่องทางใด <span class="req">*</span></label>
+      <label>ท่านพบแบบฟอร์มนี้จากช่องทางใด <span class="req">*</span></label>
       <input type="text" id="source" placeholder="เช่น Facebook, เพื่อนแนะนำ, เว็บไซต์" required>
-    </div>
-    <div class="form-group">
-      <label>ฟอร์มที่พบปัญหา <span class="req">*</span></label>
-      <select id="formType" required>
-        <option value="">-- เลือกฟอร์ม --</option>
-        <option value="แบบฟอร์มสมัครสมาชิก">แบบฟอร์มสมัครสมาชิก</option>
-        <option value="แบบฟอร์มสมัครคณะทำงาน">แบบฟอร์มสมัครคณะทำงาน</option>
-      </select>
     </div>
     
     <div class="grid-2">
@@ -68,20 +60,43 @@
     </div>
     <div class="form-group"><label>รหัสสมาชิก <span style="color:#888; font-weight:normal;">(หากมีแล้ว)</span></label><input type="text" id="memberId" placeholder="เช่น FFs260001"></div>
 
-    <div class="section-title">รายละเอียดปัญหา</div>
+    <div class="section-title">รายละเอียดปัญหา / เรื่องที่แจ้ง</div>
     <div class="form-group">
-      <label>ประเภทปัญหาที่พบ <span class="req">*</span></label>
+      <label>ประเภทเรื่องที่แจ้ง <span class="req">*</span></label>
       <select id="probType" required>
-        <option value="">-- เลือกปัญหา --</option>
+        <option value="">-- เลือกประเภท --</option>
         <option value="สมัครสมาชิกไม่ได้">สมัครสมาชิกไม่ได้</option>
         <option value="ไม่ได้รับอีเมลยืนยัน">ไม่ได้รับอีเมลยืนยัน</option>
         <option value="เข้าสู่ระบบไม่ได้">เข้าสู่ระบบไม่ได้</option>
         <option value="ลืมรหัสผ่าน">ลืมรหัสผ่าน</option>
         <option value="ข้อมูลสมาชิกไม่ถูกต้อง">ข้อมูลสมาชิกไม่ถูกต้อง</option>
-        <option value="อัปโหลดเอกสารไม่ได้">อัปโหลดเอกสารไม่ได้</option>
+        <option value="แก้ไขเอกสาร">แก้ไขเอกสาร (โปรไฟล์/เอกสารสัญญา)</option>
         <option value="อื่น ๆ">อื่น ๆ</option>
       </select>
-      <input type="text" id="probTypeOther" style="display:none; margin-top:8px; border-color:var(--primary);" placeholder="โปรดระบุปัญหาที่พบ...">
+      <input type="text" id="probTypeOther" style="display:none; margin-top:8px; border-color:var(--primary);" placeholder="โปรดระบุเรื่องที่ต้องการแจ้ง...">
+    </div>
+
+    <div class="section-title">อัปโหลดเอกสาร (ถ้ามี)</div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label class="file-upload-box">
+          <div style="font-size: 24px;">👤</div>
+          <div style="color: var(--primary); font-weight: bold; margin-top: 5px; font-size: 14px;">อัปโหลดรูปโปรไฟล์</div>
+          <div style="font-size: 11px; color: #888; margin-top: 5px;">เฉพาะไฟล์รูปภาพ ไม่เกิน 10MB</div>
+          <input type="file" id="profileFile" accept="image/*">
+          <div class="file-name" id="profile-name"></div>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label class="file-upload-box">
+          <div style="font-size: 24px;">📄</div>
+          <div style="color: var(--primary); font-weight: bold; margin-top: 5px; font-size: 14px;">อัปโหลดเอกสารสัญญา</div>
+          <div style="font-size: 11px; color: #888; margin-top: 5px;">รูปภาพหรือ PDF ไม่เกิน 10MB</div>
+          <input type="file" id="contractFile" accept="image/*,application/pdf">
+          <div class="file-name" id="contract-name"></div>
+        </label>
+      </div>
     </div>
 
     <div class="section-title">ข้อมูลทางเทคนิค</div>
@@ -122,19 +137,11 @@
       </div>
     </div>
 
-    <div class="section-title">หลักฐานประกอบ</div>
+    <div class="section-title">รายละเอียด / การติดตามผล</div>
     <div class="form-group">
-      <label>แนบภาพหน้าจอหรือคลิปวิดีโอ <span style="color:#888; font-weight:normal;">(ถ้ามี)</span></label>
-      <label class="file-upload-box" id="uploadBox">
-        <div style="font-size: 30px;">📸</div>
-        <div style="color: var(--primary); font-weight: bold; margin-top: 5px;">คลิกเพื่อแนบไฟล์หลักฐาน</div>
-        <div style="font-size: 12px; color: #888; margin-top: 5px;">รองรับรูปภาพหรือวิดีโอ (ขนาดไม่เกิน 10MB)</div>
-        <input type="file" id="evidenceFile" accept="image/*,video/*">
-        <div id="file-name"></div>
-      </label>
+      <label>คำอธิบายเพิ่มเติม / ข้อเสนอแนะ</label>
+      <textarea id="suggestion" rows="3" placeholder="อธิบายสาเหตุการแก้ไขเอกสาร ปัญหาเพิ่มเติม หรือข้อเสนอแนะ..."></textarea>
     </div>
-
-    <div class="section-title">การติดตามผล</div>
     <div class="form-group">
       <label>ต้องการให้ทีมงานติดต่อกลับทางใด <span class="req">*</span></label>
       <select id="contactVia" required>
@@ -144,17 +151,14 @@
         <option value="LINE">LINE</option>
       </select>
     </div>
-    <div class="form-group">
-      <label>ข้อเสนอแนะ / รายละเอียดเพิ่มเติม <span style="color:#888; font-weight:normal;">(ถ้ามี)</span></label>
-      <textarea id="suggestion" rows="3" placeholder="อธิบายปัญหาเพิ่มเติม หรือข้อเสนอแนะเพื่อให้เราปรับปรุง..."></textarea>
-    </div>
 
-    <button type="submit" class="btn-submit">ส่งข้อมูลแจ้งปัญหา</button>
+    <button type="submit" class="btn-submit">ส่งข้อมูลให้ทีมงาน</button>
   </form>
 </div>
 
 <script>
-  let fileData = { base64: null, mime: null, name: null };
+  let profileData = { base64: null, mime: null, name: null };
+  let contractData = { base64: null, mime: null, name: null };
 
   function setupOtherToggle(selectId, inputId) {
     document.getElementById(selectId).addEventListener('change', function() {
@@ -176,32 +180,37 @@
     return (val === 'อื่น ๆ' || val === 'อื่นๆ') ? document.getElementById(inputId).value : val;
   }
 
-  // 🛡️ ดักจับและควบคุมขนาดอัปโหลดไฟล์ (ป้องกันอาการค้าง)
-  document.getElementById('evidenceFile').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-      if(file.size > 10 * 1024 * 1024) { 
-         Swal.fire('ขนาดไฟล์ใหญ่เกินไป', 'โปรดแนบไฟล์ขนาดไม่เกิน 10MB', 'warning');
-         this.value = ''; document.getElementById('file-name').innerText = '';
-         return;
+  // 🛡️ ฟังก์ชันสำหรับจัดการอ่านไฟล์แยกกัน
+  function handleFileUpload(inputId, dataObj, nameDisplayId) {
+    document.getElementById(inputId).addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        if(file.size > 10 * 1024 * 1024) { 
+           Swal.fire('ขนาดไฟล์ใหญ่เกินไป', 'โปรดแนบไฟล์ขนาดไม่เกิน 10MB', 'warning');
+           this.value = ''; document.getElementById(nameDisplayId).innerText = '';
+           return;
+        }
+        document.getElementById(nameDisplayId).innerText = "✅ " + file.name;
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          dataObj.base64 = event.target.result;
+          dataObj.mime = file.type;
+          dataObj.name = file.name;
+        };
+        reader.readAsDataURL(file);
       }
-      document.getElementById('file-name').innerText = "✅ เลือกไฟล์แล้ว: " + file.name;
-      const reader = new FileReader();
-      reader.onload = function(event) {
-        fileData.base64 = event.target.result;
-        fileData.mime = file.type;
-        fileData.name = file.name;
-      };
-      reader.readAsDataURL(file);
-    }
-  });
+    });
+  }
+
+  handleFileUpload('profileFile', profileData, 'profile-name');
+  handleFileUpload('contractFile', contractData, 'contract-name');
 
   document.getElementById('complaintForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
     const payload = {
       source: document.getElementById('source').value,
-      formType: document.getElementById('formType').value,
+      // ลบ formType ออกแล้ว
       name: document.getElementById('name').value,
       email: document.getElementById('email').value,
       phone: document.getElementById('phone').value,
@@ -213,14 +222,20 @@
       browser: getFinalValue('browser', 'browserOther'),
       contactVia: document.getElementById('contactVia').value,
       suggestion: document.getElementById('suggestion').value,
-      fileBase64: fileData.base64,
-      fileMime: fileData.mime,
-      fileName: fileData.name 
+      
+      // ส่งข้อมูลทั้ง 2 ไฟล์ไปที่ backend
+      profileBase64: profileData.base64,
+      profileMime: profileData.mime,
+      profileName: profileData.name,
+
+      contractBase64: contractData.base64,
+      contractMime: contractData.mime,
+      contractName: contractData.name
     };
 
     Swal.fire({
       title: 'กำลังส่งข้อมูล...',
-      text: 'โปรดรอสักครู่ ระบบกำลังอัปโหลดหลักฐานและส่งเรื่องให้ทีมงาน',
+      text: 'โปรดรอสักครู่ ระบบกำลังอัปโหลดเอกสารและส่งเรื่องให้ทีมงาน',
       allowOutsideClick: false,
       didOpen: () => { Swal.showLoading(); }
     });
@@ -228,7 +243,6 @@
     // 🎯 เติมลิงก์ Web App URL (ลงท้ายด้วย /exec) ที่ได้จาก Google Apps Script ตรงนี้ครับ
     const APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwT910uisyZ8qS1birybturv4LK3QTrmenSy1lam_4UFwMZykXbzV8S8-N7d7FFkzkDTw/exec";
 
-    // ยิงข้อมูลข้ามโดเมนจาก GitHub ไปหา Google
     fetch(APP_SCRIPT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
@@ -240,16 +254,18 @@
         Swal.fire({
           icon: 'success',
           title: '<strong>ส่งข้อมูลสำเร็จ</strong>', 
-          html: 'เจ้าหน้าที่จะติดต่อกลับภายใน 1–2 วันทำการ', 
+          html: 'ทีมงานจะดำเนินการภายใน 1–2 วันทำการ', 
           confirmButtonText: 'ตกลง',
           confirmButtonColor: '#0056b3'
         }).then(() => {
           document.getElementById('complaintForm').reset();
-          document.getElementById('file-name').innerText = '';
+          document.getElementById('profile-name').innerText = '';
+          document.getElementById('contract-name').innerText = '';
           document.getElementById('probTypeOther').style.display = 'none';
           document.getElementById('osOther').style.display = 'none';
           document.getElementById('browserOther').style.display = 'none';
-          fileData = { base64: null, mime: null, name: null };
+          profileData = { base64: null, mime: null, name: null };
+          contractData = { base64: null, mime: null, name: null };
         });
       } else {
         Swal.fire('เกิดข้อผิดพลาด', res.message, 'error');
