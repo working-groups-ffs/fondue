@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>ระบบแจ้งความท้าทายการสมัครคณะทำงาน</title>
+  <title>แจ้งความท้าทายการสมัครคณะทำงาน</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛠️</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -34,6 +34,10 @@
 
     .btn-submit { width: 100%; background: var(--primary); color: #fff; border: none; padding: 14px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 30px; transition: 0.3s; font-family: inherit;}
     .btn-submit:hover { background: #004494; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,86,179,0.3); }
+    
+    /* Animation สำหรับซ่อน/แสดงกล่องอัปโหลด */
+    .fade-in { animation: fadeIn 0.4s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
 <body>
@@ -70,32 +74,48 @@
         <option value="เข้าสู่ระบบไม่ได้">เข้าสู่ระบบไม่ได้</option>
         <option value="ลืมรหัสผ่าน">ลืมรหัสผ่าน</option>
         <option value="ข้อมูลสมาชิกไม่ถูกต้อง">ข้อมูลสมาชิกไม่ถูกต้อง</option>
-        <option value="แก้ไขเอกสาร">แก้ไขเอกสาร (โปรไฟล์/เอกสารสัญญา)</option>
+        <option value="แก้ไขเอกสาร">แก้ไขเอกสาร (โปรไฟล์/สัญญา)</option>
         <option value="อื่น ๆ">อื่น ๆ</option>
       </select>
       <input type="text" id="probTypeOther" style="display:none; margin-top:8px; border-color:var(--primary);" placeholder="โปรดระบุเรื่องที่ต้องการแจ้ง...">
     </div>
 
-    <div class="section-title">อัปโหลดเอกสาร (ถ้ามี)</div>
-    <div class="grid-2">
+    <div class="section-title" id="uploadTitle">อัปโหลดไฟล์ (ถ้ามี)</div>
+    
+    <!-- 🟢 แบบที่ 1: กล่องอัปโหลดหลักฐาน (สำหรับปัญหาทั่วไป) -->
+    <div id="uploadEvidenceSection" class="fade-in">
       <div class="form-group">
         <label class="file-upload-box">
-          <div style="font-size: 24px;">👤</div>
-          <div style="color: var(--primary); font-weight: bold; margin-top: 5px; font-size: 14px;">อัปโหลดรูปโปรไฟล์</div>
-          <div style="font-size: 11px; color: #888; margin-top: 5px;">เฉพาะไฟล์รูปภาพ ไม่เกิน 10MB</div>
-          <input type="file" id="profileFile" accept="image/*">
-          <div class="file-name" id="profile-name"></div>
+          <div style="font-size: 24px;">📸</div>
+          <div style="color: var(--primary); font-weight: bold; margin-top: 5px; font-size: 14px;">อัปโหลดหลักฐานปัญหา</div>
+          <div style="font-size: 11px; color: #888; margin-top: 5px;">ภาพหรือวิดีโอ ไม่เกิน 10MB</div>
+          <input type="file" id="evidenceFile" accept="image/*,video/*">
+          <div class="file-name" id="evidence-name"></div>
         </label>
       </div>
+    </div>
 
-      <div class="form-group">
-        <label class="file-upload-box">
-          <div style="font-size: 24px;">📄</div>
-          <div style="color: var(--primary); font-weight: bold; margin-top: 5px; font-size: 14px;">อัปโหลดเอกสารสัญญา</div>
-          <div style="font-size: 11px; color: #888; margin-top: 5px;">รูปภาพหรือ PDF ไม่เกิน 10MB</div>
-          <input type="file" id="contractFile" accept="image/*,application/pdf">
-          <div class="file-name" id="contract-name"></div>
-        </label>
+    <!-- 🔵 แบบที่ 2: กล่องอัปโหลดโปรไฟล์ & สัญญา (สำหรับแก้ไขเอกสาร) -->
+    <div id="uploadDocumentSection" style="display: none;" class="fade-in">
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="file-upload-box">
+            <div style="font-size: 24px;">👤</div>
+            <div style="color: var(--primary); font-weight: bold; margin-top: 5px; font-size: 14px;">อัปโหลดรูปโปรไฟล์</div>
+            <div style="font-size: 11px; color: #888; margin-top: 5px;">เฉพาะไฟล์รูปภาพ ไม่เกิน 10MB</div>
+            <input type="file" id="profileFile" accept="image/*">
+            <div class="file-name" id="profile-name"></div>
+          </label>
+        </div>
+        <div class="form-group">
+          <label class="file-upload-box">
+            <div style="font-size: 24px;">📄</div>
+            <div style="color: var(--primary); font-weight: bold; margin-top: 5px; font-size: 14px;">อัปโหลดเอกสารสัญญา</div>
+            <div style="font-size: 11px; color: #888; margin-top: 5px;">รูปภาพหรือ PDF ไม่เกิน 10MB</div>
+            <input type="file" id="contractFile" accept="image/*,application/pdf">
+            <div class="file-name" id="contract-name"></div>
+          </label>
+        </div>
       </div>
     </div>
 
@@ -157,8 +177,43 @@
 </div>
 
 <script>
+  let evidenceData = { base64: null, mime: null, name: null };
   let profileData = { base64: null, mime: null, name: null };
   let contractData = { base64: null, mime: null, name: null };
+
+  // 🎯 ฟังก์ชันสลับกล่องอัปโหลดตามประเภทปัญหา
+  document.getElementById('probType').addEventListener('change', function() {
+    const uploadEvidence = document.getElementById('uploadEvidenceSection');
+    const uploadDocument = document.getElementById('uploadDocumentSection');
+    const probTypeOther = document.getElementById('probTypeOther');
+
+    // จัดการกล่อง 'อื่น ๆ'
+    if(this.value === 'อื่น ๆ' || this.value === 'อื่นๆ') {
+      probTypeOther.style.display = 'block'; probTypeOther.required = true;
+    } else {
+      probTypeOther.style.display = 'none'; probTypeOther.required = false; probTypeOther.value = '';
+    }
+
+    // จัดการกล่องอัปโหลด
+    if (this.value === 'แก้ไขเอกสาร' || this.value === 'แก้ไขเอกสาร (โปรไฟล์/สัญญา)') {
+      uploadEvidence.style.display = 'none';
+      uploadDocument.style.display = 'block';
+      // ล้างข้อมูลหลักฐานเก่าทิ้งเผื่อผู้ใช้เปลี่ยนใจ
+      evidenceData = { base64: null, mime: null, name: null };
+      document.getElementById('evidenceFile').value = '';
+      document.getElementById('evidence-name').innerText = '';
+    } else {
+      uploadEvidence.style.display = 'block';
+      uploadDocument.style.display = 'none';
+      // ล้างข้อมูลโปรไฟล์/สัญญาเก่าทิ้งเผื่อผู้ใช้เปลี่ยนใจ
+      profileData = { base64: null, mime: null, name: null };
+      contractData = { base64: null, mime: null, name: null };
+      document.getElementById('profileFile').value = '';
+      document.getElementById('contractFile').value = '';
+      document.getElementById('profile-name').innerText = '';
+      document.getElementById('contract-name').innerText = '';
+    }
+  });
 
   function setupOtherToggle(selectId, inputId) {
     document.getElementById(selectId).addEventListener('change', function() {
@@ -171,7 +226,6 @@
     });
   }
 
-  setupOtherToggle('probType', 'probTypeOther');
   setupOtherToggle('os', 'osOther');
   setupOtherToggle('browser', 'browserOther');
 
@@ -202,28 +256,38 @@
     });
   }
 
+  handleFileUpload('evidenceFile', evidenceData, 'evidence-name');
   handleFileUpload('profileFile', profileData, 'profile-name');
   handleFileUpload('contractFile', contractData, 'contract-name');
 
   document.getElementById('complaintForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
+    // ดึงค่าประเภทปัญหามาเช็คให้ชัวร์
+    let finalProbType = getFinalValue('probType', 'probTypeOther');
+    if (document.getElementById('probType').value === 'แก้ไขเอกสาร') {
+        finalProbType = 'แก้ไขเอกสาร (โปรไฟล์/สัญญา)';
+    }
+
     const payload = {
       source: document.getElementById('source').value,
-      // ลบ formType ออกแล้ว
       name: document.getElementById('name').value,
       email: document.getElementById('email').value,
       phone: document.getElementById('phone').value,
       lineId: document.getElementById('lineId').value,
       memberId: document.getElementById('memberId').value,
-      probType: getFinalValue('probType', 'probTypeOther'),
+      probType: finalProbType,
       device: document.getElementById('device').value,
       os: getFinalValue('os', 'osOther'),
       browser: getFinalValue('browser', 'browserOther'),
       contactVia: document.getElementById('contactVia').value,
       suggestion: document.getElementById('suggestion').value,
       
-      // ส่งข้อมูลทั้ง 2 ไฟล์ไปที่ backend
+      // ส่งข้อมูลทั้ง 3 ไฟล์ไป Backend จะรู้เองว่าต้องดึงตัวไหนไปใช้
+      evidenceBase64: evidenceData.base64,
+      evidenceMime: evidenceData.mime,
+      evidenceName: evidenceData.name,
+
       profileBase64: profileData.base64,
       profileMime: profileData.mime,
       profileName: profileData.name,
@@ -235,7 +299,7 @@
 
     Swal.fire({
       title: 'กำลังส่งข้อมูล...',
-      text: 'โปรดรอสักครู่ ระบบกำลังอัปโหลดเอกสารและส่งเรื่องให้ทีมงาน',
+      text: 'โปรดรอสักครู่ ระบบกำลังส่งข้อมูลให้ทีมงาน',
       allowOutsideClick: false,
       didOpen: () => { Swal.showLoading(); }
     });
@@ -259,11 +323,19 @@
           confirmButtonColor: '#0056b3'
         }).then(() => {
           document.getElementById('complaintForm').reset();
+          document.getElementById('evidence-name').innerText = '';
           document.getElementById('profile-name').innerText = '';
           document.getElementById('contract-name').innerText = '';
+          
           document.getElementById('probTypeOther').style.display = 'none';
           document.getElementById('osOther').style.display = 'none';
           document.getElementById('browserOther').style.display = 'none';
+          
+          // คืนค่ากล่องอัปโหลดกลับไปเป็นแบบหลักฐานปัญหา
+          document.getElementById('uploadEvidenceSection').style.display = 'block';
+          document.getElementById('uploadDocumentSection').style.display = 'none';
+          
+          evidenceData = { base64: null, mime: null, name: null };
           profileData = { base64: null, mime: null, name: null };
           contractData = { base64: null, mime: null, name: null };
         });
